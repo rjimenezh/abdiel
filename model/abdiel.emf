@@ -9,6 +9,7 @@ class PartSpecification {
 	attr String name;
 	val Property[*] properties;
 	val PinSpecification[*] pins;
+	val PortSpecification[*] ports;
 }
 
 class Property {
@@ -25,4 +26,15 @@ enum Polarity {
 class PinSpecification {
 	attr String name;
 	attr Polarity polarity;
+}
+
+class PortSpecification {
+	attr String name;
+	attr String protocol;
+	val PortWiringSpecification[*] wiring;
+}
+
+class PortWiringSpecification {
+	attr String alias;
+	ref PinSpecification pin;
 }

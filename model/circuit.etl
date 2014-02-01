@@ -48,6 +48,18 @@ operation createAttr(name, type) {
 	return attr;
 }
 
+//===================================
+// Creates an ECore reference with
+// the specified parameters.
+//===================================
+operation createRef(name, cont, type, upperBound) {
+	var ref = new Target!EReference;
+	ref.name = name;
+	ref.containment = cont;
+	ref.eType = type;
+	ref.upperBound = upperBound;
+	return ref;
+}
 
 //===================================
 // The follwing pre blocks initialize
@@ -112,12 +124,8 @@ pre eCoreInit_createPart {
 	part.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
 	part.eStructuralFeatures.add(createAttr('name', eString));
 	// Add pin container
-	var pinCont = new Target!EReference;
+	var pinCont = createRef('pins', true, pin, -1);
 	part.eStructuralFeatures.add(pinCont);
-	pinCont.name = 'pins';
-	pinCont.containment = true;
-	pinCont.eType = pin;
-	pinCont.upperBound = -1;
 	// Add GMF compartment annotation to pin container
 	var compartment = createAnn('gmf.compartment', 'collapsible', 'false');
 	compartment.details.add(createDetail('layout', 'list'));
@@ -136,37 +144,16 @@ pre eCoreInit_createWire {
 	// TODO create OCL contraints - no self loops
 	wire.eAnnotations.add(gmfLink);
 	//
-	var source = new Target!EReference;
-	wire.eStructuralFeatures.add(source);
-	source.name = 'source';
-	source.containment = false;
-	source.eType = pin;
-	//
-	var dest = new Target!EReference;
-	wire.eStructuralFeatures.add(dest);
-	dest.name = 'target';
-	dest.containment = false;
-	dest.eType = pin;
+	wire.eStructuralFeatures.add(createRef('source', false, pin, 1));
+	wire.eStructuralFeatures.add(createRef('target', false, pin, 1));
 }
 
 //===================================
 // Creates the abstract Part class.
 //===================================
 post eCoreInit_addDiagramContents {
-	// Add parts to circuit
-	var cont = new Target!EReference;
-	circuit.eStructuralFeatures.add(cont);
-	cont.name = 'parts';
-	cont.containment = true;
-	cont.eType = part;
-	cont.upperBound = -1;
-	// Add wires to circuit
-	cont = new Target!EReference;
-	circuit.eStructuralFeatures.add(cont);
-	cont.name = 'wires';
-	cont.containment = true;
-	cont.eType = wire;
-	cont.upperBound = -1;	
+	circuit.eStructuralFeatures.add(createRef('parts', true, part, -1));
+	circuit.eStructuralFeatures.add(createRef('wires', true, wire, -1));
 }
 
 //===================================

@@ -1,91 +1,127 @@
+//===================================
+// Utility operations.
+//===================================
+// Creates a new ECore annotation
+// with the specified name,
+// adding an EString to String
+// map entry with the stated name
+// and value.
+//===================================
+operation createAnn(name, key, value) {
+	var ann = new Target!EAnnotation;
+	ann.details.add(createDetail(key, value));
+	ann.source = name;
+	return ann;
+}
+
+//===================================
+// Creates a new ECore annotation
+// detail with the specified key
+// and value, to be appended to a
+// previously created annotation.
+//===================================
+operation createDetail(key, value) {
+	var kvp = new Target!EStringToStringMapEntry;
+	kvp.key = key;
+	kvp.value = value;
+	return kvp;
+}
+
+//===================================
+// Creates a new ECore enum literal
+// with the specified name and value.
+//===================================
+operation createLiteral(name, value) {
+	var litVal = new Target!EEnumLiteral;
+	litVal.name = name;
+	litVal.value = value;
+	return litVal;
+}
+//===================================
+// Creates an ECore attribute with
+// the specified name and type.
+//===================================
+operation createAttr(name, type) {
+	var attr = new Target!EAttribute;
+	attr.name = name;
+	attr.eType = type;	
+	return attr;
+}
+
+
+//===================================
+// The follwing pre blocks initialize
+// the Circuit ECore model by
+// creating a series of constructs,
+// including key EuGENia annotations.
+//===================================
+// Creates the Circuit package.
+//===================================
 pre eCoreInit_createPackage {
 	var pkg = new Target!EPackage;
 	pkg.name = 'circuit';
 	pkg.nsPrefix = 'circuit';
 	pkg.nsURI = 'http://www.intec.edu.do/abdiel/circuit';
-	//
+}
+
+//===================================
+// Creates the diagram base Circuit
+// class.
+//===================================
+pre eCoreInit_createCircuitClass {
 	var circuit = new Target!EClass;
 	pkg.eClassifiers.add(circuit);
+	circuit.eAnnotations.add(createAnn('gmf.diagram', 'onefile', 'true'));
 	circuit.name = 'Circuit';
-	var gmfDiagAnn = new Target!EAnnotation;
-	circuit.eAnnotations.add(gmfDiagAnn);
-	gmfDiagAnn.source = 'gmf.diagram';
-	var ann = new Target!EStringToStringMapEntry;
-	ann.key = 'onefile';
-	ann.value = 'true';
-	gmfDiagAnn.details.add(ann);
 	// TODO Add 'rcp=true' detail
-	//
+}
+//===================================
+// Creates the Polarity enumeration.
+// TODO Could this be a rule instead?
+//===================================
+pre eCoreInit_createPolarityEnum {
 	var polarity = new Target!EEnum;
 	pkg.eClassifiers.add(polarity);
 	polarity.name = 'Polarity';
-	var value = new Target!EEnumLiteral;
-	polarity.eLiterals.add(value);
-	value.name = 'NEUTRAL';
-	value.value = 1;
-	value = new Target!EEnumLiteral;
-	polarity.eLiterals.add(value);
-	value.name = 'POSITIVE';
-	value.value = 2;
-	value = new Target!EEnumLiteral;
-	polarity.eLiterals.add(value);
-	value.name = 'NEGATIVE';
-	value.value = 3;
-	//
+	polarity.eLiterals.add(createLiteral('NEUTRAL', 1));
+	polarity.eLiterals.add(createLiteral('POSTIIVE', 2));
+	polarity.eLiterals.add(createLiteral('NEGATIVE', 3));
+}
+
+//===================================
+// Creates the instance Pin class.
+//===================================
+pre eCoreInit_createPin { 
 	var pin = new Target!EClass;
 	pkg.eClassifiers.add(pin);
-	var gmfNodeAnn = new Target!EAnnotation;
-	pin.eAnnotations.add(gmfNodeAnn);
 	pin.name = 'Pin';
-	gmfNodeAnn.source = 'gmf.node';
-	ann = new Target!EStringToStringMapEntry;
-	gmfNodeAnn.details.add(ann);
-	ann.key = 'label';
-	ann.value = 'name';
-	var attr = new Target!EAttribute;
-	pin.eStructuralFeatures.add(attr);
-	attr.name = 'name';
+	pin.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
 	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
-	attr.eType = eString;	
-	attr = new Target!EAttribute;
-	pin.eStructuralFeatures.add(attr);
-	attr.name = 'polarity';
-	attr.eType = polarity;
-	//
+	pin.eStructuralFeatures.add(createAttr('name', eString));
+	pin.eStructuralFeatures.add(createAttr('polarity', polarity));
+}
+
+//===================================
+// Creates the abstract Part class.
+//===================================
+pre eCoreInit_createPart {
 	var part = new Target!EClass;
 	pkg.eClassifiers.add(part);
 	part.name = 'Part';
 	part.abstract = true;
-	var gmfNodeAnn = new Target!EAnnotation;
-	gmfNodeAnn.source = 'gmf.node';
-	var ann = new Target!EStringToStringMapEntry;
-	ann.key = 'label';
-	ann.value = 'name';
-	gmfNodeAnn.details.add(ann);
-	part.eAnnotations.add(gmfNodeAnn);
-	var attr = new Target!EAttribute;
-	part.eStructuralFeatures.add(attr);
-	attr.name = 'name';
-	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
-	attr.eType = eString;	
+	part.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
+	part.eStructuralFeatures.add(createAttr('name', eString));
+	// Add pin container
 	var pinCont = new Target!EReference;
 	part.eStructuralFeatures.add(pinCont);
 	pinCont.name = 'pins';
 	pinCont.containment = true;
 	pinCont.eType = pin;
 	pinCont.upperBound = -1;
-	//
-	var gmfContAnn = new Target!EAnnotation;
-	gmfContAnn.source = 'gmf.compartment';
-	ann = new Target!EStringToStringMapEntry;
-	ann.key = 'collapsible';
-	ann.value = 'false';
-	gmfContAnn.details.add(ann);
-	ann = new Target!EStringToStringMapEntry;
-	ann.key = 'layout';
-	ann.value = 'list';
-	gmfContAnn.details.add(ann);
-	pinCont.eAnnotations.add(gmfContAnn);
+	// Add GMF compartment annotation to pin container
+	var compartment = createAnn('gmf.compartment', 'collapsible', 'false');
+	compartment.details.add(createDetail('layout', 'list'));
+	pinCont.eAnnotations.add(compartment);
 	// Add parts to circuit
 	var cont = new Target!EReference;
 	circuit.eStructuralFeatures.add(cont);
@@ -95,23 +131,38 @@ pre eCoreInit_createPackage {
 	cont.upperBound = -1;
 }
 
+//===================================
+// PartSpec2EClass rule
+// For each concrete PartSpecitication
+// in the source ABDIEL model, create
+// an ECore EClass in order to allow
+// EuGENia to generate a tool and graph
+// node for it.  The generated EClass
+// extends Part and has attributes that
+// mirror the transformed PartSpecification's
+// associated Properties.
+//===================================
 rule PartSpec2EClass
 transform partSpec : Source!PartSpecification
 to eClass : Target!EClass {
+	var ckt = Target!EPackage.all.selectOne(p|p.name='circuit');
 	eClass.name := partSpec.name;
-	var lib = Target!EPackage.all.selectOne(p|p.name='circuit');
-	lib.eClassifiers.add(eClass);
+	ckt.eClassifiers.add(eClass);
 	eClass.eSuperTypes.add(Target!EClass.all.selectOne(c|c.name='Part'));
 	//
+	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
 	for(prop:Source!Property in partSpec.properties) {
 		var attr = new Target!EAttribute;
 		eClass.eStructuralFeatures.add(attr);
-		attr.name = prop.name;
-		var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+		attr.name = prop.name;		
 		attr.eType = eString;
 	}
 }
 
+//===================================
+// Informative post block to let us know
+// the transformation has finished.
+//===================================
 post wrapUp {
  	'Transformation finished'.println();
 }

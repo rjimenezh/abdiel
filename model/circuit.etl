@@ -84,7 +84,7 @@ pre eCoreInit_createPolarityEnum {
 	pkg.eClassifiers.add(polarity);
 	polarity.name = 'Polarity';
 	polarity.eLiterals.add(createLiteral('NEUTRAL', 1));
-	polarity.eLiterals.add(createLiteral('POSTIIVE', 2));
+	polarity.eLiterals.add(createLiteral('POSITIVE', 2));
 	polarity.eLiterals.add(createLiteral('NEGATIVE', 3));
 }
 

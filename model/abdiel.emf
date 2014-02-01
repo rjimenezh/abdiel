@@ -1,0 +1,49 @@
+@namespace(uri="http://www.intec.edu.do/abdiel", prefix="abdiel")
+package abdiel;
+
+class Library {
+	val PartSpecification[*] specs;
+	val Property[*] properties;
+	val PinSpecification[*] pins;
+}
+
+class PartSpecification {
+	attr String name;
+	ref Property[*] properties;
+	ref PinSpecification[*] pins;	
+}
+
+class Property {
+	attr String name;
+	attr String value;
+}
+
+enum Polarity {
+	NEUTRAL = 1;
+	POSITIVE = 2;
+	NEGATIVE = 3;
+}
+
+class PinSpecification {
+	attr String name;
+	attr Polarity polarity;
+}
+
+/*
+@gmf.diagram(onefile="true")
+class Circuit {
+	val Part[*] parts;
+}
+
+@gmf.node(label="name")
+class Part {
+	readonly attr String name;
+	val Pin[*] pins;
+}
+
+@gmf.node(label="name")
+class Pin {
+	readonly attr String name;
+	readonly attr Polarity polarity;
+}
+*/

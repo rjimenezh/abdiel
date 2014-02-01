@@ -1,0 +1,117 @@
+pre eCoreInit_createPackage {
+	var pkg = new Target!EPackage;
+	pkg.name = 'circuit';
+	pkg.nsPrefix = 'circuit';
+	pkg.nsURI = 'http://www.intec.edu.do/abdiel/circuit';
+	//
+	var circuit = new Target!EClass;
+	pkg.eClassifiers.add(circuit);
+	circuit.name = 'Circuit';
+	var gmfDiagAnn = new Target!EAnnotation;
+	circuit.eAnnotations.add(gmfDiagAnn);
+	gmfDiagAnn.source = 'gmf.diagram';
+	var ann = new Target!EStringToStringMapEntry;
+	ann.key = 'onefile';
+	ann.value = 'true';
+	gmfDiagAnn.details.add(ann);
+	// TODO Add 'rcp=true' detail
+	//
+	var polarity = new Target!EEnum;
+	pkg.eClassifiers.add(polarity);
+	polarity.name = 'Polarity';
+	var value = new Target!EEnumLiteral;
+	polarity.eLiterals.add(value);
+	value.name = 'NEUTRAL';
+	value.value = 1;
+	value = new Target!EEnumLiteral;
+	polarity.eLiterals.add(value);
+	value.name = 'POSITIVE';
+	value.value = 2;
+	value = new Target!EEnumLiteral;
+	polarity.eLiterals.add(value);
+	value.name = 'NEGATIVE';
+	value.value = 3;
+	//
+	var pin = new Target!EClass;
+	pkg.eClassifiers.add(pin);
+	var gmfNodeAnn = new Target!EAnnotation;
+	pin.eAnnotations.add(gmfNodeAnn);
+	pin.name = 'Pin';
+	gmfNodeAnn.source = 'gmf.node';
+	ann = new Target!EStringToStringMapEntry;
+	gmfNodeAnn.details.add(ann);
+	ann.key = 'label';
+	ann.value = 'name';
+	var attr = new Target!EAttribute;
+	pin.eStructuralFeatures.add(attr);
+	attr.name = 'name';
+	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+	attr.eType = eString;	
+	attr = new Target!EAttribute;
+	pin.eStructuralFeatures.add(attr);
+	attr.name = 'polarity';
+	attr.eType = polarity;
+	//
+	var part = new Target!EClass;
+	pkg.eClassifiers.add(part);
+	part.name = 'Part';
+	part.abstract = true;
+	var gmfNodeAnn = new Target!EAnnotation;
+	gmfNodeAnn.source = 'gmf.node';
+	var ann = new Target!EStringToStringMapEntry;
+	ann.key = 'label';
+	ann.value = 'name';
+	gmfNodeAnn.details.add(ann);
+	part.eAnnotations.add(gmfNodeAnn);
+	var attr = new Target!EAttribute;
+	part.eStructuralFeatures.add(attr);
+	attr.name = 'name';
+	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+	attr.eType = eString;	
+	var pinCont = new Target!EReference;
+	part.eStructuralFeatures.add(pinCont);
+	pinCont.name = 'pins';
+	pinCont.containment = true;
+	pinCont.eType = pin;
+	pinCont.upperBound = -1;
+	//
+	var gmfContAnn = new Target!EAnnotation;
+	gmfContAnn.source = 'gmf.compartment';
+	ann = new Target!EStringToStringMapEntry;
+	ann.key = 'collapsible';
+	ann.value = 'false';
+	gmfContAnn.details.add(ann);
+	ann = new Target!EStringToStringMapEntry;
+	ann.key = 'layout';
+	ann.value = 'list';
+	gmfContAnn.details.add(ann);
+	pinCont.eAnnotations.add(gmfContAnn);
+	// Add parts to circuit
+	var cont = new Target!EReference;
+	circuit.eStructuralFeatures.add(cont);
+	cont.name = 'parts';
+	cont.containment = true;
+	cont.eType = part;
+	cont.upperBound = -1;
+}
+
+rule PartSpec2EClass
+transform partSpec : Source!PartSpecification
+to eClass : Target!EClass {
+	eClass.name := partSpec.name;
+	var lib = Target!EPackage.all.selectOne(p|p.name='circuit');
+	lib.eClassifiers.add(eClass);
+	eClass.eSuperTypes.add(Target!EClass.all.selectOne(c|c.name='Part'));
+	//
+	for(prop:Source!Property in partSpec.properties) {
+		var attr = new Target!EAttribute;
+		eClass.eStructuralFeatures.add(attr);
+		attr.name = prop.name;
+		var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+		attr.eType = eString;
+	}
+}
+
+post wrapUp {
+ 	'Transformation finished'.println();
+}

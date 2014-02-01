@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<abdiel:Library xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:abdiel="http://www.intec.edu.do/abdiel">
+  <specs name="Battery" properties="//@properties.0 //@properties.1" pins="//@pins.1 //@pins.0"/>
+  <properties name="voltage" value=""/>
+  <properties name="capacity" value=""/>
+  <pins name="positive" polarity="POSITIVE"/>
+  <pins name="negative" polarity="NEGATIVE"/>
+</abdiel:Library>

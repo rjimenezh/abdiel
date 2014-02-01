@@ -6,4 +6,21 @@
     <pins name="positive" polarity="POSITIVE"/>
     <pins name="negative" polarity="NEGATIVE"/>
   </specs>
+  <specs name="AT328P">
+    <pins name="A4"/>
+    <pins name="A5"/>
+    <pins name="RESET"/>
+    <ports name="AT328P_I2C" protocol="I2C">
+      <wiring alias="SDA" pin="//@specs.1/@pins.0"/>
+      <wiring alias="SCL" pin="//@specs.1/@pins.1"/>
+    </ports>
+  </specs>
+  <specs name="DS1307">
+    <pins name="SDA"/>
+    <pins name="SCL"/>
+    <ports name="DS1307_I2C" protocol="I2C">
+      <wiring alias="SDA" pin="//@specs.2/@pins.0"/>
+      <wiring alias="SCL" pin="//@specs.2/@pins.1"/>
+    </ports>
+  </specs>
 </abdiel:Library>

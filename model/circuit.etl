@@ -149,11 +149,41 @@ pre eCoreInit_createWire {
 }
 
 //===================================
-// Creates the abstract Part class.
+// Creates the Net node class.
+//===================================
+pre eCoreInit_createNet {
+	var net = new Target!EClass;
+	pkg.eClassifiers.add(net);
+	net.name = 'Net';
+	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+	net.eStructuralFeatures.add(createAttr('name', eString));
+	net.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
+}
+
+//===================================
+// Creates the NetWire link class.
+//===================================
+pre eCoreInit_createNetWire {
+	var netWire = new Target!EClass;
+	pkg.eClassifiers.add(netWire);
+	netWire.name = 'NetWire';
+	var gmfLink = createAnn('gmf.link', 'source', 'source');
+	gmfLink.details.add(createDetail('target', 'target'));
+	// TODO create OCL contraints - no self loops
+	netWire.eAnnotations.add(gmfLink);
+	//
+	netWire.eStructuralFeatures.add(createRef('source', false, pin, 1));
+	netWire.eStructuralFeatures.add(createRef('target', false, net, 1));
+}
+
+//===================================
+// Add diagram contents to Circuit.
 //===================================
 post eCoreInit_addDiagramContents {
 	circuit.eStructuralFeatures.add(createRef('parts', true, part, -1));
 	circuit.eStructuralFeatures.add(createRef('wires', true, wire, -1));
+	circuit.eStructuralFeatures.add(createRef('nets', true, net, -1));
+	circuit.eStructuralFeatures.add(createRef('netWires', true, netWire, -1));
 }
 
 //===================================

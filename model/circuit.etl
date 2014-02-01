@@ -122,6 +122,37 @@ pre eCoreInit_createPart {
 	var compartment = createAnn('gmf.compartment', 'collapsible', 'false');
 	compartment.details.add(createDetail('layout', 'list'));
 	pinCont.eAnnotations.add(compartment);
+}
+
+//===================================
+// Creates the Wire link class.
+//===================================
+pre eCoreInit_createWire {
+	var wire = new Target!EClass;
+	pkg.eClassifiers.add(wire);
+	wire.name = 'Wire';
+	var gmfLink = createAnn('gmf.link', 'source', 'source');
+	gmfLink.details.add(createDetail('target', 'target'));
+	// TODO create OCL contraints - no self loops
+	wire.eAnnotations.add(gmfLink);
+	//
+	var source = new Target!EReference;
+	wire.eStructuralFeatures.add(source);
+	source.name = 'source';
+	source.containment = false;
+	source.eType = pin;
+	//
+	var dest = new Target!EReference;
+	wire.eStructuralFeatures.add(dest);
+	dest.name = 'target';
+	dest.containment = false;
+	dest.eType = pin;
+}
+
+//===================================
+// Creates the abstract Part class.
+//===================================
+post eCoreInit_addDiagramContents {
 	// Add parts to circuit
 	var cont = new Target!EReference;
 	circuit.eStructuralFeatures.add(cont);
@@ -129,6 +160,13 @@ pre eCoreInit_createPart {
 	cont.containment = true;
 	cont.eType = part;
 	cont.upperBound = -1;
+	// Add wires to circuit
+	cont = new Target!EReference;
+	circuit.eStructuralFeatures.add(cont);
+	cont.name = 'wires';
+	cont.containment = true;
+	cont.eType = wire;
+	cont.upperBound = -1;	
 }
 
 //===================================

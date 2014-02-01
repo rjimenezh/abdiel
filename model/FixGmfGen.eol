@@ -1,3 +1,6 @@
-// Adjust GmfGen in order to inject Java expression method bodies
+//===================================
+// Adjust GmfGen in order to inject
+// Java expression method bodies.
+//===================================
 var javaExpProv = GmfGen!GenJavaExpressionProvider.all.first();
 javaExpProv.injectExpressionBody = true;

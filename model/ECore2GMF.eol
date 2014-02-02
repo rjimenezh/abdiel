@@ -9,23 +9,28 @@ var partClass = EClass.all.selectOne(c|c.name = 'Part');
 var parts = EClass.all.select(p|p.eSuperTypes.includes(partClass));
 for(part:EClass in parts) {
 	var nodeMapping = GmfMap!NodeMapping.all.selectOne(nm|nm.domainMetaElement = part);
-	var pins = part.eAllStructuralFeatures.selectOne(f|f.name='pins');
-	var value = new GmfMap!ValueExpression;
-	value.language = GmfMap!Language#java;
-	value.body = 'return circuit.PartInitializer.getInstance().initializePins(self);';
-	// Create feature value spec
-	var init = new GmfMap!FeatureValueSpec;
-	init.feature = pins;
-	init.value = value;
-	// Add initializer to node mapping
-	// (Define feature seq initializer as needed)
-	if(nodeMapping.domainInitializer.isUndefined()) {			
+	if(nodeMapping.domainInitializer.isUndefined()) {
 		var domainInit = new GmfMap!FeatureSeqInitializer;
-		domainInit.initializers.add(init);
 		nodeMapping.domainInitializer = domainInit;
 	}
-	else {
-		nodeMapping.domainInitializer.initializers.add(init);
-	}	
+	var pins = part.eAllStructuralFeatures.selectOne(f|f.name='pins');
+	var init = createJavaInitializer(
+		pins, 'return circuit.PartInitializer.getInstance().initializePins(self);');
+	nodeMapping.domainInitializer.initializers.add(init);
+	//
+	var ports = part.eAllStructuralFeatures.selectOne(f|f.name='ports');
+	init = createJavaInitializer(
+		ports, 'return circuit.PartInitializer.getInstance().initializePorts(self);');
+	nodeMapping.domainInitializer.initializers.add(init);
+}
+
+operation createJavaInitializer(feature, body) {
+	var value = new GmfMap!ValueExpression;
+	value.language = GmfMap!Language#java;
+	value.body = body;
+	var init = new GmfMap!FeatureValueSpec;
+	init.feature = feature;
+	init.value = value;
+	return init;
 }
 

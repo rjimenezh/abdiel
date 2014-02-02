@@ -9,7 +9,8 @@
 //===================================
 operation createAnn(name, key, value) {
 	var ann = new Target!EAnnotation;
-	ann.details.add(createDetail(key, value));
+	if(key <> null)
+		ann.details.add(createDetail(key, value));
 	ann.source = name;
 	return ann;
 }
@@ -91,7 +92,7 @@ pre eCoreInit_createCircuitClass {
 // Creates the Polarity enumeration.
 // TODO Could this be a rule instead?
 //===================================
-pre eCoreInit_createPolarityEnum {
+pre eCoreInit_createPolarity {
 	var polarity = new Target!EEnum;
 	pkg.eClassifiers.add(polarity);
 	polarity.name = 'Polarity';
@@ -114,6 +115,40 @@ pre eCoreInit_createPin {
 }
 
 //===================================
+// Creates the Port class.
+//===================================
+pre eCoreInit_createPort {
+	var port = new Target!EClass;
+	pkg.eClassifiers.add(port);
+	port.name = 'Port';
+	var gmfNode = createAnn('gmf.node', 'label', 'name');
+	gmfNode.details.add(createDetail('figure', 'rectangle'));
+	gmfNode.details.add(createDetail('size', '20,20'));
+	gmfNode.details.add(createDetail('label.placement', 'external'));
+	gmfNode.details.add(createDetail('label.icon', 'false'));
+	port.eAnnotations.add(gmfNode);
+	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+	port.eStructuralFeatures.add(createAttr('name', eString));
+	port.eStructuralFeatures.add(createAttr('protocol', eString));
+}
+
+//===================================
+// Creates the PortWiring link class.
+//===================================
+pre eCoreInit_createPortWiring {
+	var portWiring = new Target!EClass;
+	pkg.eClassifiers.add(portWiring);
+	portWiring.name = 'PortWiring';
+	var gmfLink = createAnn('gmf.link', 'source', 'port');
+	gmfLink.details.add(createDetail('target', 'pin'));
+	portWiring.eAnnotations.add(gmfLink);	
+	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+	portWiring.eStructuralFeatures.add(createAttr('role', eString));
+	portWiring.eStructuralFeatures.add(createRef('pin', false, pin, 1));
+	portWiring.eStructuralFeatures.add(createRef('port', false, port, 1));	
+}
+
+//===================================
 // Creates the abstract Part class.
 //===================================
 pre eCoreInit_createPart {
@@ -130,6 +165,11 @@ pre eCoreInit_createPart {
 	var compartment = createAnn('gmf.compartment', 'collapsible', 'false');
 	compartment.details.add(createDetail('layout', 'list'));
 	pinCont.eAnnotations.add(compartment);
+	// Add ports container
+	var portCont = createRef('ports', true, port, -1);
+	part.eStructuralFeatures.add(portCont);
+	// Add GMF affixed annotation to port container
+	portCont.eAnnotations.add(createAnn('gmf.affixed', null, null));	
 }
 
 //===================================
@@ -184,6 +224,7 @@ post eCoreInit_addDiagramContents {
 	circuit.eStructuralFeatures.add(createRef('wires', true, wire, -1));
 	circuit.eStructuralFeatures.add(createRef('nets', true, net, -1));
 	circuit.eStructuralFeatures.add(createRef('netWires', true, netWire, -1));
+	circuit.eStructuralFeatures.add(createRef('portWires', true, portWiring, -1));
 }
 
 //===================================

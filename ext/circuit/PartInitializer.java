@@ -112,7 +112,10 @@ public class PartInitializer {
 					wiring.setPin(lookupPin(part, wiringSpec.getPin()));
 					wiring.setPort(port);
 					wiring.setRole(wiringSpec.getAlias());
-					// TODO will these wirings make it to the diagram?
+					// TODO These adds the wirings to the diagram,
+					// but they don't show up immediately
+					Circuit ckt = (Circuit)part.eContainer();
+					ckt.getPortWires().add(wiring);
 				}
 				generatedPorts.add(port);
 			}

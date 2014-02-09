@@ -122,9 +122,9 @@ pre eCoreInit_createPort {
 	pkg.eClassifiers.add(port);
 	port.name = 'Port';
 	var gmfNode = createAnn('gmf.node', 'label', 'name');
-	gmfNode.details.add(createDetail('figure', 'rectangle'));
+	gmfNode.details.add(createDetail('figure', 'ellipse'));
 	gmfNode.details.add(createDetail('size', '20,20'));
-	gmfNode.details.add(createDetail('label.placement', 'external'));
+	gmfNode.details.add(createDetail('label.placement', 'none'));
 	gmfNode.details.add(createDetail('label.icon', 'false'));
 	port.eAnnotations.add(gmfNode);
 	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
@@ -141,6 +141,7 @@ pre eCoreInit_createPortWiring {
 	portWiring.name = 'PortWiring';
 	var gmfLink = createAnn('gmf.link', 'source', 'port');
 	gmfLink.details.add(createDetail('target', 'pin'));
+	gmfLink.details.add(createDetail('style', 'dash'));
 	portWiring.eAnnotations.add(gmfLink);	
 	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
 	portWiring.eStructuralFeatures.add(createAttr('role', eString));

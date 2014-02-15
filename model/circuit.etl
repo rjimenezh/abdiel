@@ -219,6 +219,19 @@ pre eCoreInit_createNetWire {
 	netWire.eStructuralFeatures.add(createRef('target', false, net, 1));
 }
 
+pre eCoreInit_createPortConnection {
+	var portConn = new Target!EClass;
+	pkg.eClassifiers.add(portConn);
+	portConn.name = 'PortConnection';
+	var gmfLink = createAnn('gmf.link', 'source', 'source');
+	gmfLink.details.add(createDetail('target', 'target'));
+	// TODO create OCL contraints - no self loops, same protocols, etc.
+	portConn.eAnnotations.add(gmfLink);
+	//
+	portConn.eStructuralFeatures.add(createRef('source', false, port, 1));
+	portConn.eStructuralFeatures.add(createRef('target', false, port, 1));
+}
+
 //===================================
 // Add diagram contents to Circuit.
 //===================================
@@ -228,6 +241,7 @@ post eCoreInit_addDiagramContents {
 	circuit.eStructuralFeatures.add(createRef('nets', true, net, -1));
 	circuit.eStructuralFeatures.add(createRef('netWires', true, netWire, -1));
 	circuit.eStructuralFeatures.add(createRef('portWires', true, portWiring, -1));
+	circuit.eStructuralFeatures.add(createRef('portConns', true, portConn, -1));
 }
 
 //===================================

@@ -113,7 +113,8 @@ public class PartInitializer {
 					wiring.setPort(port);
 					wiring.setRole(wiringSpec.getAlias());
 					// TODO These adds the wirings to the diagram,
-					// but they don't show up immediately
+					// but they don't show up immediately.
+					// Getting a TransactEditingDom doesn't quite work...
 					Circuit ckt = (Circuit)part.eContainer();
 					ckt.getPortWires().add(wiring);
 				}

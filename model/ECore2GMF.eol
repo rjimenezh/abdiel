@@ -1,4 +1,5 @@
 //====================================================
+// GMF Map changes:
 // Create Java feature initializers to automatically
 // instantiate all pins within each part when the part
 // is first created
@@ -24,6 +25,20 @@ for(part:EClass in parts) {
 	nodeMapping.domainInitializer.initializers.add(init);
 }
 
+//====================================================
+// GMF Graph changes:
+// Adjust pins' preferred size
+//====================================================
+var pinRect = GmfGraph!RoundedRectangle.all.selectOne(r|r.name='PinFigure');
+var preferredSize = new GmfGraph!Dimension;
+preferredSize.dx = 60;
+preferredSize.dy = 30;
+pinRect.preferredSize = preferredSize; 
+
+//====================================================
+// Convenience operation to create
+// a Java initializer (for GmfMap features)
+//====================================================
 operation createJavaInitializer(feature, body) {
 	var value = new GmfMap!ValueExpression;
 	value.language = GmfMap!Language#java;
@@ -33,4 +48,3 @@ operation createJavaInitializer(feature, body) {
 	init.value = value;
 	return init;
 }
-

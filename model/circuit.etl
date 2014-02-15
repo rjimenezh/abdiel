@@ -84,9 +84,11 @@ pre eCoreInit_createPackage {
 pre eCoreInit_createCircuitClass {
 	var circuit = new Target!EClass;
 	pkg.eClassifiers.add(circuit);
-	circuit.eAnnotations.add(createAnn('gmf.diagram', 'onefile', 'true'));
+	var gmfDiagram = createAnn('gmf.diagram', 'onefile', 'true');
+	gmfDiagram.details.add(createDetail('rcp', 'true'));
+	gmfDiagram.details.add(createDetail('diagram.extension', 'abl'));
+	circuit.eAnnotations.add(gmfDiagram);
 	circuit.name = 'Circuit';
-	// TODO Add 'rcp=true' detail
 	
 }
 //===================================
@@ -184,7 +186,8 @@ pre eCoreInit_createWire {
 	wire.name = 'Wire';
 	var gmfLink = createAnn('gmf.link', 'source', 'source');
 	gmfLink.details.add(createDetail('target', 'target'));
-	// TODO create OCL contraints - no self loops
+	gmfLink.details.add(createDetail('source.constraint', 'self <> oppositeEnd'));
+	gmfLink.details.add(createDetail('target.constraint', 'self <> oppositeEnd'));
 	wire.eAnnotations.add(gmfLink);
 	//
 	wire.eStructuralFeatures.add(createRef('source', false, pin, 1));
@@ -212,20 +215,26 @@ pre eCoreInit_createNetWire {
 	netWire.name = 'NetWire';
 	var gmfLink = createAnn('gmf.link', 'source', 'source');
 	gmfLink.details.add(createDetail('target', 'target'));
-	// TODO create OCL contraints - no self loops
 	netWire.eAnnotations.add(gmfLink);
 	//
 	netWire.eStructuralFeatures.add(createRef('source', false, pin, 1));
 	netWire.eStructuralFeatures.add(createRef('target', false, net, 1));
 }
 
+//===================================
+// Creates the PortConnection
+// link class.
+//===================================
 pre eCoreInit_createPortConnection {
 	var portConn = new Target!EClass;
 	pkg.eClassifiers.add(portConn);
 	portConn.name = 'PortConnection';
 	var gmfLink = createAnn('gmf.link', 'source', 'source');
 	gmfLink.details.add(createDetail('target', 'target'));
-	// TODO create OCL contraints - no self loops, same protocols, etc.
+	gmfLink.details.add(createDetail(
+		'source.constraint', 'self <> oppositeEnd and self.protocol = oppositeEnd.protocol'));
+	gmfLink.details.add(createDetail(
+		'target.constraint', 'self <> oppositeEnd and self.protocol = oppositeEnd.protocol'));
 	portConn.eAnnotations.add(gmfLink);
 	//
 	portConn.eStructuralFeatures.add(createRef('source', false, port, 1));

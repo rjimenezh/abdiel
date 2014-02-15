@@ -87,6 +87,7 @@ pre eCoreInit_createCircuitClass {
 	circuit.eAnnotations.add(createAnn('gmf.diagram', 'onefile', 'true'));
 	circuit.name = 'Circuit';
 	// TODO Add 'rcp=true' detail
+	
 }
 //===================================
 // Creates the Polarity enumeration.
@@ -108,7 +109,9 @@ pre eCoreInit_createPin {
 	var pin = new Target!EClass;
 	pkg.eClassifiers.add(pin);
 	pin.name = 'Pin';
-	pin.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
+	var gmfNode = createAnn('gmf.node', 'label', 'name');
+	gmfNode.details.add(createDetail('label.icon', 'false'));
+	pin.eAnnotations.add(gmfNode);
 	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
 	pin.eStructuralFeatures.add(createAttr('name', eString));
 	pin.eStructuralFeatures.add(createAttr('polarity', polarity));
@@ -157,7 +160,6 @@ pre eCoreInit_createPart {
 	pkg.eClassifiers.add(part);
 	part.name = 'Part';
 	part.abstract = true;
-	//part.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
 	part.eStructuralFeatures.add(createAttr('name', eString));
 	// Add pin container
 	var pinCont = createRef('pins', true, pin, -1);

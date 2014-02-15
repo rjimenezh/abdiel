@@ -157,7 +157,7 @@ pre eCoreInit_createPart {
 	pkg.eClassifiers.add(part);
 	part.name = 'Part';
 	part.abstract = true;
-	part.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
+	//part.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
 	part.eStructuralFeatures.add(createAttr('name', eString));
 	// Add pin container
 	var pinCont = createRef('pins', true, pin, -1);
@@ -246,6 +246,10 @@ to eClass : Target!EClass {
 	eClass.name := partSpec.name;
 	ckt.eClassifiers.add(eClass);
 	eClass.eSuperTypes.add(Target!EClass.all.selectOne(c|c.name='Part'));
+	//
+	var gmfNode = createAnn('gmf.node', 'label', 'name');
+	gmfNode.details.add(createDetail('label.pattern', '{0}:' + eClass.name));
+	eClass.eAnnotations.add(gmfNode);	
 	//
 	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
 	for(prop:Source!Property in partSpec.properties) {

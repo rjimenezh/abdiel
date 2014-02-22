@@ -247,10 +247,8 @@ pre eCoreInit_createPortConnection {
 	portConn.name = 'PortConnection';
 	var gmfLink = createAnn('gmf.link', 'source', 'source');
 	gmfLink.details.add(createDetail('target', 'target'));
-	gmfLink.details.add(createDetail(
-		'source.constraint', 'self <> oppositeEnd and self.protocol = oppositeEnd.protocol'));
-	gmfLink.details.add(createDetail(
-		'target.constraint', 'self <> oppositeEnd and self.protocol = oppositeEnd.protocol'));
+	//gmfLink.details.add(createDetail(
+		//'source.constraint', '(self <> oppositeEnd) and (self.protocol = oppositeEnd.protocol)'));
 	portConn.eAnnotations.add(gmfLink);
 	//
 	portConn.eStructuralFeatures.add(createRef('source', false, port, 1));

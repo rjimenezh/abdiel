@@ -63,6 +63,22 @@ operation createRef(name, cont, type, upperBound) {
 }
 
 //===================================
+// Add diagram contents to Circuit.
+//===================================
+operation resolveType(type) {
+	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+	var eInt = ECore!EDataType.all.selectOne(dt|dt.name='EInt');
+	var eFloat = ECore!EDataType.all.selectOne(dt|dt.name='EFloat');
+	var eBoolean = ECore!EDataType.all.selectOne(dt|dt.name='EBoolean');
+	switch(type) {
+		case Source!PropertyType#STRING: return eString;
+		case Source!PropertyType#INTEGER: return eInt;
+		case Source!PropertyType#FLOAT: return eFloat;
+		case Source!PropertyType#BOOLEAN: return eBoolean;
+	}
+}
+
+//===================================
 // The follwing pre blocks initialize
 // the Circuit ECore model by
 // creating a series of constructs,
@@ -275,13 +291,12 @@ to eClass : Target!EClass {
 	var gmfNode = createAnn('gmf.node', 'label', 'name');
 	gmfNode.details.add(createDetail('label.pattern', '{0}:' + eClass.name));
 	eClass.eAnnotations.add(gmfNode);	
-	//
-	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
+	//	
 	for(prop:Source!Property in partSpec.properties) {
 		var attr = new Target!EAttribute;
 		eClass.eStructuralFeatures.add(attr);
-		attr.name = prop.name;		
-		attr.eType = eString;
+		attr.name = prop.name;
+		attr.eType = resolveType(prop.type);
 	}
 }
 

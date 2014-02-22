@@ -2,39 +2,47 @@
 package abdiel;
 
 class Library {
-	val PartSpecification[*] specs;
+  val PartSpecification[*] specs;
 }
 
 class PartSpecification {
-	attr String name;
-	val Property[*] properties;
-	val PinSpecification[*] pins;
-	val PortSpecification[*] ports;
+  attr String name;
+  val Property[*] properties;
+  val PinSpecification[*] pins;
+  val PortSpecification[*] ports;
+}
+
+enum PropertyType {
+  STRING = 1;
+  INTEGER = 2;
+  FLOAT = 3;
+  BOOLEAN = 4;
 }
 
 class Property {
-	attr String name;
-	attr String value;
+  attr String name;
+  attr PropertyType type;
 }
 
 enum Polarity {
-	NEUTRAL = 1;
-	POSITIVE = 2;
-	NEGATIVE = 3;
+  NEUTRAL = 1;
+  POSITIVE = 2;
+  NEGATIVE = 3;
 }
 
 class PinSpecification {
-	attr String name;
-	attr Polarity polarity;
+  attr String name;
+  attr Polarity polarity;
 }
 
 class PortSpecification {
-	attr String name;
-	attr String protocol;
-	val PortWiringSpecification[*] wiring;
+  attr String name;
+  attr String protocol;
+  val PortWiringSpecification[*] wiring;
 }
 
 class PortWiringSpecification {
-	attr String alias;
-	ref PinSpecification pin;
+  attr String alias;
+  ref PinSpecification pin;
 }
+

@@ -86,7 +86,7 @@ operation resolveType(type) {
 //===================================
 // Creates the Circuit package.
 //===================================
-pre eCoreInit_createPackage {
+pre createPackage {
 	var pkg = new Target!EPackage;
 	pkg.name = 'circuit';
 	pkg.nsPrefix = 'circuit';
@@ -97,21 +97,28 @@ pre eCoreInit_createPackage {
 // Creates the diagram base Circuit
 // class.
 //===================================
-pre eCoreInit_createCircuitClass {
+pre createCircuitClass {
 	var circuit = new Target!EClass;
 	pkg.eClassifiers.add(circuit);
+	circuit.name = 'Circuit';
 	var gmfDiagram = createAnn('gmf.diagram', 'onefile', 'true');
 	gmfDiagram.details.add(createDetail('rcp', 'true'));
 	gmfDiagram.details.add(createDetail('diagram.extension', 'abl'));
 	circuit.eAnnotations.add(gmfDiagram);
-	circuit.name = 'Circuit';
-	
 }
+
+pre createJoint {
+	var joint = new Target!EClass;
+	pkg.eClassifiers.add(joint);
+	joint.name = 'Joint';
+	joint.abstract = true;
+}
+
 //===================================
 // Creates the Polarity enumeration.
 // TODO Could this be a rule instead?
 //===================================
-pre eCoreInit_createPolarity {
+pre createPolarity {
 	var polarity = new Target!EEnum;
 	pkg.eClassifiers.add(polarity);
 	polarity.name = 'Polarity';
@@ -123,10 +130,11 @@ pre eCoreInit_createPolarity {
 //===================================
 // Creates the instance Pin class.
 //===================================
-pre eCoreInit_createPin { 
+pre createPin { 
 	var pin = new Target!EClass;
 	pkg.eClassifiers.add(pin);
 	pin.name = 'Pin';
+	pin.eSuperTypes.add(joint);
 	var gmfNode = createAnn('gmf.node', 'label', 'name');
 	gmfNode.details.add(createDetail('label.icon', 'false'));
 	pin.eAnnotations.add(gmfNode);
@@ -138,7 +146,7 @@ pre eCoreInit_createPin {
 //===================================
 // Creates the Port class.
 //===================================
-pre eCoreInit_createPort {
+pre createPort {
 	var port = new Target!EClass;
 	pkg.eClassifiers.add(port);
 	port.name = 'Port';
@@ -156,7 +164,7 @@ pre eCoreInit_createPort {
 //===================================
 // Creates the PortWiring link class.
 //===================================
-pre eCoreInit_createPortWiring {
+pre createPortWiring {
 	var portWiring = new Target!EClass;
 	pkg.eClassifiers.add(portWiring);
 	portWiring.name = 'PortWiring';
@@ -173,7 +181,7 @@ pre eCoreInit_createPortWiring {
 //===================================
 // Creates the abstract Part class.
 //===================================
-pre eCoreInit_createPart {
+pre createPart {
 	var part = new Target!EClass;
 	pkg.eClassifiers.add(part);
 	part.name = 'Part';
@@ -196,7 +204,7 @@ pre eCoreInit_createPart {
 //===================================
 // Creates the Wire link class.
 //===================================
-pre eCoreInit_createWire {
+pre createWire {
 	var wire = new Target!EClass;
 	pkg.eClassifiers.add(wire);
 	wire.name = 'Wire';
@@ -206,17 +214,18 @@ pre eCoreInit_createWire {
 	gmfLink.details.add(createDetail('target.constraint', 'self <> oppositeEnd'));
 	wire.eAnnotations.add(gmfLink);
 	//
-	wire.eStructuralFeatures.add(createRef('source', false, pin, 1));
-	wire.eStructuralFeatures.add(createRef('target', false, pin, 1));
+	wire.eStructuralFeatures.add(createRef('source', false, joint, 1));
+	wire.eStructuralFeatures.add(createRef('target', false, joint, 1));
 }
 
 //===================================
 // Creates the Net node class.
 //===================================
-pre eCoreInit_createNet {
+pre createNet {
 	var net = new Target!EClass;
 	pkg.eClassifiers.add(net);
 	net.name = 'Net';
+	net.eSuperTypes.add(joint);
 	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
 	net.eStructuralFeatures.add(createAttr('name', eString));
 	net.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
@@ -225,7 +234,8 @@ pre eCoreInit_createNet {
 //===================================
 // Creates the NetWire link class.
 //===================================
-pre eCoreInit_createNetWire {
+/*
+pre createNetWire {
 	var netWire = new Target!EClass;
 	pkg.eClassifiers.add(netWire);
 	netWire.name = 'NetWire';
@@ -236,12 +246,13 @@ pre eCoreInit_createNetWire {
 	netWire.eStructuralFeatures.add(createRef('source', false, pin, 1));
 	netWire.eStructuralFeatures.add(createRef('target', false, net, 1));
 }
+*/
 
 //===================================
 // Creates the PortConnection
 // link class.
 //===================================
-pre eCoreInit_createPortConnection {
+pre createPortConnection {
 	var portConn = new Target!EClass;
 	pkg.eClassifiers.add(portConn);
 	portConn.name = 'PortConnection';
@@ -258,11 +269,11 @@ pre eCoreInit_createPortConnection {
 //===================================
 // Add diagram contents to Circuit.
 //===================================
-post eCoreInit_addDiagramContents {
+post addDiagramContents {
 	circuit.eStructuralFeatures.add(createRef('parts', true, part, -1));
 	circuit.eStructuralFeatures.add(createRef('wires', true, wire, -1));
 	circuit.eStructuralFeatures.add(createRef('nets', true, net, -1));
-	circuit.eStructuralFeatures.add(createRef('netWires', true, netWire, -1));
+	// circuit.eStructuralFeatures.add(createRef('netWires', true, netWire, -1));
 	circuit.eStructuralFeatures.add(createRef('portWires', true, portWiring, -1));
 	circuit.eStructuralFeatures.add(createRef('portConns', true, portConn, -1));
 }

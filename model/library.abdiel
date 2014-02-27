@@ -48,9 +48,12 @@
   </specs>
   <specs name="Crystal">
     <properties name="frequency"/>
-    <pins name="t1"/>
-    <pins name="t2"/>
-    <ports name="xtalConn" protocol="XTAL"/>
+    <pins name="x1"/>
+    <pins name="x2"/>
+    <ports name="xtalConn" protocol="XTAL">
+      <wiring alias="XTAL1" pin="//@specs.9/@pins.0"/>
+      <wiring alias="XTAL2" pin="//@specs.9/@pins.1"/>
+    </ports>
   </specs>
   <specs name="ATTiny2313">
     <pins name="RESET"/>
@@ -70,6 +73,9 @@
     <pins name="PB3"/>
     <pins name="PB4"/>
     <pins name="PB5"/>
-    <ports name="externalCrystal" protocol="XTAL"/>
+    <ports name="externalCrystal" protocol="XTAL">
+      <wiring alias="XTAL1" pin="//@specs.10/@pins.1"/>
+      <wiring alias="XTAL2" pin="//@specs.10/@pins.2"/>
+    </ports>
   </specs>
 </abdiel:Library>

@@ -228,7 +228,10 @@ pre createNet {
 	net.eSuperTypes.add(joint);
 	var eString = ECore!EDataType.all.selectOne(dt|dt.name='EString');
 	net.eStructuralFeatures.add(createAttr('name', eString));
-	net.eAnnotations.add(createAnn('gmf.node', 'label', 'name'));
+	var gmfNode = createAnn('gmf.node', 'label', 'name');
+	gmfNode.details.add(createDetail('label.icon', 'false'));
+	gmfNode.details.add(createDetail('color', '204,255,204'));
+	net.eAnnotations.add(gmfNode);
 }
 
 //===================================

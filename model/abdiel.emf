@@ -38,7 +38,7 @@ class PinSpecification {
 class PortSpecification {
   attr String name;
   attr String protocol;
-  val PortWiringSpecification[*] wiring;
+  val PortWiringSpecification[+] wiring;
 }
 
 class PortWiringSpecification {

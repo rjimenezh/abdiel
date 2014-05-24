@@ -31,7 +31,7 @@ for(part:EClass in parts) {
 //====================================================
 var pinRect = GmfGraph!RoundedRectangle.all.selectOne(r|r.name='PinFigure');
 var preferredSize = new GmfGraph!Dimension;
-preferredSize.dx = 60;
+preferredSize.dx = 100;
 preferredSize.dy = 30;
 pinRect.preferredSize = preferredSize; 
 

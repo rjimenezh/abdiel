@@ -78,4 +78,49 @@
       <wiring alias="XTAL2" pin="//@specs.10/@pins.2"/>
     </ports>
   </specs>
+  <specs name="GenericAtmelUC">
+    <pins name="XTAL1"/>
+    <pins name="XTAL2"/>
+    <pins name="RESET"/>
+    <pins name="VCC" polarity="POSITIVE"/>
+    <pins name="GND" polarity="NEGATIVE"/>
+    <pins name="digitalPin"/>
+    <pins name="analogPin"/>
+    <ports name="externalCrystal" protocol="XTAL">
+      <wiring alias="XTAL1" pin="//@specs.11/@pins.0"/>
+      <wiring alias="XTAL2" pin="//@specs.11/@pins.1"/>
+    </ports>
+    <ports name="USART" protocol="USART">
+      <wiring alias="TX" pin="//@specs.11/@pins.5"/>
+      <wiring alias="RX" pin="//@specs.11/@pins.5"/>
+      <wiring alias="XCK" pin="//@specs.11/@pins.5"/>
+    </ports>
+    <ports name="USI" protocol="USI">
+      <wiring alias="DO" pin="//@specs.11/@pins.5"/>
+      <wiring alias="DI_SDA" pin="//@specs.11/@pins.5"/>
+      <wiring alias="USCK_SCL" pin="//@specs.11/@pins.5"/>
+    </ports>
+    <ports name="UART" protocol="UART">
+      <wiring alias="TX" pin="//@specs.11/@pins.5"/>
+      <wiring alias="RX" pin="//@specs.11/@pins.5"/>
+    </ports>
+    <ports name="SPI" protocol="SPI">
+      <wiring alias="MISO" pin="//@specs.11/@pins.5"/>
+      <wiring alias="MOSI" pin="//@specs.11/@pins.5"/>
+      <wiring alias="SCK" pin="//@specs.11/@pins.5"/>
+      <wiring alias="SS" pin="//@specs.11/@pins.5"/>
+    </ports>
+    <ports name="TWI" protocol="I2C">
+      <wiring alias="SDA" pin="//@specs.11/@pins.5"/>
+      <wiring alias="SCL" pin="//@specs.11/@pins.5"/>
+    </ports>
+    <ports name="ICSP" protocol="ICSP">
+      <wiring alias="VCC" pin="//@specs.11/@pins.3"/>
+      <wiring alias="GND" pin="//@specs.11/@pins.4"/>
+      <wiring alias="RESET" pin="//@specs.11/@pins.2"/>
+      <wiring alias="MISO" pin="//@specs.11/@pins.5"/>
+      <wiring alias="MOSI" pin="//@specs.11/@pins.5"/>
+      <wiring alias="SCK" pin="//@specs.11/@pins.5"/>
+    </ports>
+  </specs>
 </abdiel:Library>

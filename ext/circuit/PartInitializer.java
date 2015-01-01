@@ -14,6 +14,13 @@ import abdiel.PartSpecification;
 import abdiel.PinSpecification;
 import abdiel.PortSpecification;
 import abdiel.PortWiringSpecification;
+import circuit.Circuit;
+import circuit.CircuitFactory;
+import circuit.Part;
+import circuit.Pin;
+import circuit.Polarity;
+import circuit.Port;
+import circuit.PortWiring;
 
 /**
  * The PartInitializer class carries out
@@ -41,12 +48,12 @@ public class PartInitializer {
 	// CONSTRUCTORS
 	
 	private PartInitializer() {
-		AbdielFactory.eINSTANCE.eClass();
 		// Statically run constructor
+		AbdielFactory.eINSTANCE.eClass();
 		// Loads the Library model
 		ResourceSet resSet = new ResourceSetImpl();
 		Resource model = resSet.getResource(
-				URI.createURI("file://C:/epsilon/workspace/abdiel/model/library.abdiel"), true);
+			URI.createPlatformPluginURI("/abdiel/model/library.abdiel", true), true);
 		lib = (Library)model.getContents().get(0);
 	}
 	

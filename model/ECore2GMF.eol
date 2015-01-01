@@ -16,12 +16,12 @@ for(part:EClass in parts) {
 	}
 	var pins = part.eAllStructuralFeatures.selectOne(f|f.name='pins');
 	var init = createJavaInitializer(
-		pins, 'return circuit.PartInitializer.getInstance().initializePins(self);');
+		pins, 'return circuit.ext.PartInitializer.getInstance().initializePins(self);');
 	nodeMapping.domainInitializer.initializers.add(init);
 	//
 	var ports = part.eAllStructuralFeatures.selectOne(f|f.name='ports');
 	init = createJavaInitializer(
-		ports, 'return circuit.PartInitializer.getInstance().initializePorts(self);');
+		ports, 'return circuit.ext.PartInitializer.getInstance().initializePorts(self);');
 	nodeMapping.domainInitializer.initializers.add(init);
 }
 
